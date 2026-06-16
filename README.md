@@ -79,3 +79,4 @@ Everything is managed from the admin panel — no spreadsheets needed for v1:
   vendor deletes its products too.
 - **OG previews** — product pages have server-rendered metadata, so WhatsApp
   link previews show the product name, brand, vendor and category.
+# force redeploy Tue Jun 16 16:52:20 UTC 2026
