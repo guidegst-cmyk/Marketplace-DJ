@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --eq-bar-1: 40%;
+  --eq-bar-2: 75%;
+  --eq-bar-3: 55%;
+  --eq-bar-4: 90%;
+  --eq-bar-5: 65%;
+}
+
+body {
+  background-color: #FAF7F1;
+  color: #20242A;
+}
+
+/* Equipment-plate style tag used on cards for category labels */
+.ch-tag {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid #C2723A;
+  color: #A55A28;
+  padding: 2px 8px;
+  border-radius: 2px;
+  display: inline-block;
+  background-color: #F1D9C6;
+}
+
+/* Decorative EQ bars used near the logo */
+.eq-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+}
+
+.eq-bars span {
+  display: block;
+  width: 3px;
+  background-color: #2F6E68;
+  border-radius: 1px;
+}
+
+.eq-bars span:nth-child(1) { height: var(--eq-bar-1); }
+.eq-bars span:nth-child(2) { height: var(--eq-bar-2); }
+.eq-bars span:nth-child(3) { height: var(--eq-bar-3); }
+.eq-bars span:nth-child(4) { height: var(--eq-bar-4); }
+.eq-bars span:nth-child(5) { height: var(--eq-bar-5); }
+
+/* Rocker-style filter toggle */
+.rocker {
+  border: 1px solid #E3DCCD;
+  background-color: #FFFFFF;
+  color: #20242A;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.rocker[data-active="true"] {
+  background-color: #2F6E68;
+  border-color: #2F6E68;
+  color: #FAF7F1;
+}
+
+.rocker:hover[data-active="false"] {
+  border-color: #2F6E68;
+}
+
+/* Focus visibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #2F6E68;
+  outline-offset: 2px;
+}
