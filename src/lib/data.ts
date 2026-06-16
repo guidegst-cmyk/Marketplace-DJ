@@ -31,7 +31,7 @@ export async function getProducts(supabase: SupabaseClient, filters: ProductFilt
   let query = supabase
     .from('products')
     .select(
-      'id, name, brand, specs, description, active, vendor_id, category_id, created_at, vendors(id, name, area), categories(id, name, slug)',
+      'id, name, brand, specs, description, image_url, active, vendor_id, category_id, created_at, vendors(id, name, area), categories(id, name, slug)',
       { count: 'exact' }
     )
     .eq('active', true)
@@ -65,7 +65,7 @@ export async function getProductById(supabase: SupabaseClient, id: string) {
   const { data } = await supabase
     .from('products')
     .select(
-      'id, name, brand, specs, description, active, vendor_id, category_id, created_at, vendors(id, name, area), categories(id, name, slug)'
+      'id, name, brand, specs, description, image_url, active, vendor_id, category_id, created_at, vendors(id, name, area), categories(id, name, slug)'
     )
     .eq('id', id)
     .maybeSingle();
