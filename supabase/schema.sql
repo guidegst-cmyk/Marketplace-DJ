@@ -143,3 +143,32 @@ insert into settings (site_name, whatsapp_number, enquiry_message_template)
 select 'XYZ', '910000000000',
   'Hi, I am interested in {product} ({brand}) listed by {vendor} under {category}. Please share price and availability.'
 where not exists (select 1 from settings);
+
+-- ============================================================
+-- Photo support (run this if upgrading from v1 without photos)
+-- ============================================================
+
+-- Add image_url column to products (safe to run even if already exists)
+alter table products add column if not exists image_url text;
+
+-- Create a public storage bucket for product images
+insert into storage.buckets (id, name, public)
+values ('product-images', 'product-images', true)
+on conflict (id) do nothing;
+
+-- Allow anyone to read product images (public bucket)
+drop policy if exists "product_images_public_read" on storage.objects;
+create policy "product_images_public_read" on storage.objects
+  for select to anon, authenticated
+  using (bucket_id = 'product-images');
+
+-- Allow authenticated admin to upload/delete images
+drop policy if exists "product_images_admin_upload" on storage.objects;
+create policy "product_images_admin_upload" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'product-images');
+
+drop policy if exists "product_images_admin_delete" on storage.objects;
+create policy "product_images_admin_delete" on storage.objects
+  for delete to authenticated
+  using (bucket_id = 'product-images');

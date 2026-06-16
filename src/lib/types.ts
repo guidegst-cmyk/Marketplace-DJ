@@ -21,6 +21,7 @@ export type Product = {
   brand: string | null;
   specs: string | null;
   description: string | null;
+  image_url: string | null;
   active: boolean;
   vendor_id: string;
   category_id: string;

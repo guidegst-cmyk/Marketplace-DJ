@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getProductById, getSettings } from '@/lib/data';
@@ -29,6 +30,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     openGraph: {
       title,
       description,
+      images: product.image_url ? [{ url: product.image_url }] : [],
       type: 'website',
     },
   };
@@ -70,56 +72,76 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
         <span className="text-ink">{product.name}</span>
       </nav>
 
-      <div className="border border-line rounded bg-white p-6 sm:p-8">
-        <div className="flex items-start justify-between gap-4 mb-3">
-          {product.categories && <span className="ch-tag">{product.categories.name}</span>}
-        </div>
-
-        <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink leading-tight">
-          {product.name}
-        </h1>
-
-        {product.brand && (
-          <p className="mt-2 text-sm font-mono text-muted uppercase tracking-wide">
-            Brand: {product.brand}
-          </p>
+      <div className="border border-line rounded bg-white overflow-hidden">
+        {/* Product image */}
+        {product.image_url ? (
+          <div className="relative w-full aspect-[16/9] bg-paper border-b border-line">
+            <Image
+              src={product.image_url}
+              alt={product.name}
+              fill
+              className="object-contain p-4"
+              sizes="(max-width: 768px) 100vw, 768px"
+              priority
+            />
+          </div>
+        ) : (
+          <div className="w-full aspect-[16/9] bg-paper border-b border-line flex items-center justify-center">
+            <span className="font-mono text-xs text-muted uppercase tracking-wide">No photo available</span>
+          </div>
         )}
 
-        {product.specs && (
-          <div className="mt-4 border border-line rounded p-4 bg-paper">
-            <p className="text-xs font-mono uppercase tracking-wide text-muted mb-1">
-              Specifications
+        <div className="p-6 sm:p-8">
+          <div className="flex items-start justify-between gap-4 mb-3">
+            {product.categories && <span className="ch-tag">{product.categories.name}</span>}
+          </div>
+
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink leading-tight">
+            {product.name}
+          </h1>
+
+          {product.brand && (
+            <p className="mt-2 text-sm font-mono text-muted uppercase tracking-wide">
+              Brand: {product.brand}
             </p>
-            <p className="text-sm font-mono text-ink whitespace-pre-line">{product.specs}</p>
-          </div>
-        )}
+          )}
 
-        {product.description && (
-          <p className="mt-4 text-sm text-ink/80 leading-relaxed">{product.description}</p>
-        )}
-
-        {product.vendors && (
-          <div className="mt-6 pt-6 border-t border-line flex items-center justify-between gap-4 flex-wrap">
-            <div>
-              <p className="text-xs font-mono uppercase tracking-wide text-muted">Sold by</p>
-              <Link
-                href={`/vendors/${product.vendors.id}`}
-                className="font-display font-bold text-ink hover:text-teal transition-colors"
-              >
-                {product.vendors.name}
-              </Link>
-              {product.vendors.area && (
-                <p className="text-sm text-muted">{product.vendors.area}</p>
-              )}
+          {product.specs && (
+            <div className="mt-4 border border-line rounded p-4 bg-paper">
+              <p className="text-xs font-mono uppercase tracking-wide text-muted mb-1">
+                Specifications
+              </p>
+              <p className="text-sm font-mono text-ink whitespace-pre-line">{product.specs}</p>
             </div>
-          </div>
-        )}
+          )}
 
-        <div className="mt-8 flex items-center justify-between gap-4 flex-wrap border-t border-line pt-6">
-          <span className="font-mono text-copper-dark font-medium text-sm">
-            Enquire for price
-          </span>
-          <EnquireButton href={enquireHref} />
+          {product.description && (
+            <p className="mt-4 text-sm text-ink/80 leading-relaxed">{product.description}</p>
+          )}
+
+          {product.vendors && (
+            <div className="mt-6 pt-6 border-t border-line flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <p className="text-xs font-mono uppercase tracking-wide text-muted">Sold by</p>
+                <Link
+                  href={`/vendors/${product.vendors.id}`}
+                  className="font-display font-bold text-ink hover:text-teal transition-colors"
+                >
+                  {product.vendors.name}
+                </Link>
+                {product.vendors.area && (
+                  <p className="text-sm text-muted">{product.vendors.area}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          <div className="mt-8 flex items-center justify-between gap-4 flex-wrap border-t border-line pt-6">
+            <span className="font-mono text-copper-dark font-medium text-sm">
+              Enquire for price
+            </span>
+            <EnquireButton href={enquireHref} />
+          </div>
         </div>
       </div>
     </div>
