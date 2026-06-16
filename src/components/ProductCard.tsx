@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import type { Product, Settings } from '@/lib/types';
 import { buildEnquiryLink } from '@/lib/whatsapp';
 import EnquireButton from './EnquireButton';
@@ -23,30 +22,23 @@ export default function ProductCard({
   return (
     <div className="border border-line rounded bg-white flex flex-col">
       {/* Product image */}
-      <div className="relative w-full aspect-[4/3] bg-paper border-b border-line rounded-t overflow-hidden">
+      <div className="relative w-full aspect-[4/3] bg-paper border-b border-line rounded-t overflow-hidden flex items-center justify-center">
         {product.image_url ? (
-          <Image
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             src={product.image_url}
             alt={product.name}
-            fill
-            className="object-contain p-2"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="w-full h-full object-contain p-2"
           />
         ) : (
-          <div className="flex items-center justify-center h-full">
-            <span className="font-mono text-xs text-muted uppercase tracking-wide">No photo</span>
-          </div>
+          <span className="font-mono text-xs text-muted uppercase tracking-wide">No photo</span>
         )}
       </div>
 
       <div className="p-4 flex-1 flex flex-col gap-2">
-        <div className="flex items-start justify-between gap-2">
-          {product.categories ? (
-            <span className="ch-tag">{product.categories.name}</span>
-          ) : (
-            <span />
-          )}
-        </div>
+        {product.categories && (
+          <span className="ch-tag">{product.categories.name}</span>
+        )}
 
         <Link href={`/products/${product.id}`} className="group">
           <h3 className="font-display font-bold text-base text-ink leading-snug group-hover:text-teal transition-colors">

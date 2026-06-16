@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getProductById, getSettings } from '@/lib/data';
@@ -10,19 +9,15 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   const supabase = createClient();
   const product = await getProductById(supabase, params.id);
 
-  if (!product) {
-    return { title: 'Product not found — XYZ Marketplace' };
-  }
+  if (!product) return { title: 'Product not found — XYZ Marketplace' };
 
   const title = `${product.name}${product.brand ? ` — ${product.brand}` : ''} | XYZ Marketplace`;
   const description = [
     product.categories?.name ? `${product.categories.name}.` : null,
     product.vendors?.name ? `Sold by ${product.vendors.name}.` : null,
-    product.specs ? product.specs : null,
+    product.specs ?? null,
     'Enquire on WhatsApp for price and availability.',
-  ]
-    .filter(Boolean)
-    .join(' ');
+  ].filter(Boolean).join(' ');
 
   return {
     title,
@@ -43,9 +38,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
     getProductById(supabase, params.id),
   ]);
 
-  if (!product || !product.active) {
-    notFound();
-  }
+  if (!product || !product.active) notFound();
 
   const enquireHref = settings
     ? buildEnquiryLink(settings, {
@@ -74,29 +67,27 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
 
       <div className="border border-line rounded bg-white overflow-hidden">
         {/* Product image */}
-        {product.image_url ? (
-          <div className="relative w-full aspect-[16/9] bg-paper border-b border-line">
-            <Image
+        <div className="w-full aspect-[16/9] bg-paper border-b border-line flex items-center justify-center overflow-hidden">
+          {product.image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               src={product.image_url}
               alt={product.name}
-              fill
-              className="object-contain p-4"
-              sizes="(max-width: 768px) 100vw, 768px"
-              priority
+              className="w-full h-full object-contain p-4"
             />
-          </div>
-        ) : (
-          <div className="w-full aspect-[16/9] bg-paper border-b border-line flex items-center justify-center">
-            <span className="font-mono text-xs text-muted uppercase tracking-wide">No photo available</span>
-          </div>
-        )}
+          ) : (
+            <span className="font-mono text-xs text-muted uppercase tracking-wide">
+              No photo available
+            </span>
+          )}
+        </div>
 
         <div className="p-6 sm:p-8">
-          <div className="flex items-start justify-between gap-4 mb-3">
-            {product.categories && <span className="ch-tag">{product.categories.name}</span>}
-          </div>
+          {product.categories && (
+            <span className="ch-tag">{product.categories.name}</span>
+          )}
 
-          <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink leading-tight">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink leading-tight mt-3">
             {product.name}
           </h1>
 
@@ -108,9 +99,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
 
           {product.specs && (
             <div className="mt-4 border border-line rounded p-4 bg-paper">
-              <p className="text-xs font-mono uppercase tracking-wide text-muted mb-1">
-                Specifications
-              </p>
+              <p className="text-xs font-mono uppercase tracking-wide text-muted mb-1">Specifications</p>
               <p className="text-sm font-mono text-ink whitespace-pre-line">{product.specs}</p>
             </div>
           )}
@@ -120,19 +109,17 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
           )}
 
           {product.vendors && (
-            <div className="mt-6 pt-6 border-t border-line flex items-center justify-between gap-4 flex-wrap">
-              <div>
-                <p className="text-xs font-mono uppercase tracking-wide text-muted">Sold by</p>
-                <Link
-                  href={`/vendors/${product.vendors.id}`}
-                  className="font-display font-bold text-ink hover:text-teal transition-colors"
-                >
-                  {product.vendors.name}
-                </Link>
-                {product.vendors.area && (
-                  <p className="text-sm text-muted">{product.vendors.area}</p>
-                )}
-              </div>
+            <div className="mt-6 pt-6 border-t border-line">
+              <p className="text-xs font-mono uppercase tracking-wide text-muted">Sold by</p>
+              <Link
+                href={`/vendors/${product.vendors.id}`}
+                className="font-display font-bold text-ink hover:text-teal transition-colors"
+              >
+                {product.vendors.name}
+              </Link>
+              {product.vendors.area && (
+                <p className="text-sm text-muted">{product.vendors.area}</p>
+              )}
             </div>
           )}
 
